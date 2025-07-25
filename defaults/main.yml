@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: MIT-0
+---
+# defaults file for bookstack_container_setup
+
+bookstack_container_setup_name: bookstack
+bookstack_container_setup_networks:
+  - name: bookstack
+
+bookstack_container_setup_image: lscr.io/linuxserver/bookstack:latest
+bookstack_container_setup_labels:
+  traefik.enable: "false"
+bookstack_container_setup_dir: /srv/bookstack
+bookstack_container_setup_ports:
+  - "6875:80"
+
+
+bookstack_container_setup_recreate: true
+bookstack_container_setup_privileged: false
+bookstack_container_setup_restart_policy: unless-stopped
+
+# Generate APP_KEY before deploy: docker run -it --rm --entrypoint /bin/bash lscr.io/linuxserver/bookstack:latest appkey
+
+bookstack_container_setup_env:
+  PUID: '1000'
+  PGID: '1000'
+  TZ: "Europe/Oslo"
+  APP_URL: "https://bookstack.domain.com"
+  APP_KEY: "base64:fj0hosn983hgoudsuoaoifjwqifjaoisfhwafhsaofhg"
+  DB_HOST: "mariadb"
+  DB_PORT: '3306'
+  DB_USERNAME: "bookstackuser"
+  DB_PASSWORD: "examplepassword"
+  DB_DATABASE: "bookstackdb"

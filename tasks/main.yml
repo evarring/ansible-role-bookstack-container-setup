@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: MIT-0
+---
+# tasks file for bookstack_container_setup
+
+# https://github.com/linuxserver/docker-bookstack
+
+- name: Ensure bookstack container volume directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0744'
+    owner: "{{ ansible_user | default(root) }}"
+    group: "{{ ansible_user | default(root) }}"
+  loop:
+    - "{{ bookstack_container_setup_dir }}"
+    - "{{ bookstack_container_setup_dir }}/config"
+  become: true
+
+- name: Create networks
+  community.docker.docker_network:
+    name: "{{ item.name }}"
+  loop: "{{ bookstack_container_setup_networks }}"
+  become: true
+
+- name: Create bookstack container
+  community.docker.docker_container:
+    name: "{{ bookstack_container_setup_name }}"
+    image: "{{ bookstack_container_setup_image }}"
+    state: "{{ bookstack_container_setup_state | default('started') }}"
+    networks: "{{ bookstack_container_setup_networks }}"
+    network_mode: "{{ bookstack_container_setup_network_mode }}"
+    healthcheck: "{{ bookstack_container_setup_healthcheck | default(omit) }}"
+    recreate: "{{ bookstack_container_setup_recreate }}"
+    privileged: "{{ bookstack_container_setup_privileged }}"
+    user: "{{ bookstack_container_setup_user_uid_gid | default(omit) }}"
+    ports: "{{ bookstack_container_setup_ports | default('80:80') }}"
+    volumes:
+      - "{{ bookstack_container_setup_dir }}/config:/config:rw,Z"
+    env: "{{ bookstack_container_setup_env | default(omit) }}"
+    labels: "{{ bookstack_container_setup_labels }}"
+    restart_policy: "{{ bookstack_container_setup_restart_policy }}"
+
+- name: Enable linger for user {{ ansible_user | default('root') }}
+  ansible.builtin.command:
+    argv:
+      - /usr/bin/loginctl
+      - enable-linger
+      - "{{ ansible_user | default('root') }}"
+    creates: "/var/lib/systemd/linger/{{ ansible_user | default('root') }}"
+  become: true
+  when: ansible_virtualization_type != "container"
