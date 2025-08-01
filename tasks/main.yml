@@ -15,6 +15,11 @@
         - "{{ bookstack_container_setup_image }}"
       loop_control:
         loop_var: bookstackimage_item
+      register: bookstack_image_pull_result
+
+    - name: Flush handlers immediately
+      ansible.builtin.meta: flush_handlers
+      when: bookstack_image_pull_result.changed # noqa: no-handler
 
 - name: Ensure bookstack container is stopped when recreating
   when: bookstack_container_setup_recreate
