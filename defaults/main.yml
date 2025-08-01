@@ -14,7 +14,7 @@ bookstack_container_setup_ports:
   - "6875:80"
 
 
-bookstack_container_setup_recreate: true
+bookstack_container_setup_recreate: false
 bookstack_container_setup_privileged: false
 bookstack_container_setup_restart_policy: unless-stopped
 

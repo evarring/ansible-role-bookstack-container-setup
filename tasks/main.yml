@@ -4,6 +4,30 @@
 
 # https://github.com/linuxserver/docker-bookstack
 
+- name: Pull the configured image if they haven't already and stop containers if changed
+  notify: Stop container
+  block:
+    - name: Pull the configured image if hasn't already
+      community.docker.docker_image:
+        name: "{{ bookstackimage_item }}"
+        source: pull
+      loop:
+        - "{{ bookstack_container_setup_server_image }}"
+      loop_control:
+        loop_var: bookstackimage_item
+
+- name: Ensure bookstack container is stopped when recreating
+  when: bookstack_container_setup_recreate
+  block:
+    - name: Notify the handler
+      ansible.builtin.debug:
+        msg: "Stopping container for recreation"
+      notify: Stop container
+      changed_when: true
+
+    - name: Flush handlers immediately
+      ansible.builtin.meta: flush_handlers
+
 - name: Ensure bookstack container volume directories exist
   ansible.builtin.file:
     path: "{{ item }}"
