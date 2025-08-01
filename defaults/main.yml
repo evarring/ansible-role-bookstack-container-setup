@@ -13,6 +13,8 @@ bookstack_container_setup_dir: /srv/bookstack
 bookstack_container_setup_ports:
   - "6875:80"
 
+bookstack_container_setup_cpus: 0.5
+bookstack_container_setup_memory: 256
 
 bookstack_container_setup_recreate: false
 bookstack_container_setup_privileged: false

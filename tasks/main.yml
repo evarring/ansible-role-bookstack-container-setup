@@ -53,6 +53,8 @@
     state: "{{ bookstack_container_setup_state | default('started') }}"
     networks: "{{ bookstack_container_setup_networks }}"
     network_mode: "{{ bookstack_container_setup_network_mode }}"
+    cpus: "{{ bookstack_container_setup_cpus }}"
+    memory: "{{ bookstack_container_setup_memory }}"
     healthcheck: "{{ bookstack_container_setup_healthcheck | default(omit) }}"
     recreate: "{{ bookstack_container_setup_recreate }}"
     privileged: "{{ bookstack_container_setup_privileged }}"
