@@ -12,7 +12,7 @@
         name: "{{ bookstackimage_item }}"
         source: pull
       loop:
-        - "{{ bookstack_container_setup_server_image }}"
+        - "{{ bookstack_container_setup_image }}"
       loop_control:
         loop_var: bookstackimage_item
 
